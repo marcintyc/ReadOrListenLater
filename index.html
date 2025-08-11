@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Read & Listen</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#0f172a" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Read & Listen</h1>
+      <div id="status" class="status">Backend: unknown</div>
+    </header>
+
+    <section id="save-section">
+      <div class="card">
+        <input id="url-input" type="url" placeholder="Paste article URL" />
+        <div class="actions">
+          <button id="save-url-btn">Save from link</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings-section">
+      <div class="card">
+        <input id="api-input" type="url" placeholder="Backend URL (e.g. https://your-app.onrender.com)" />
+        <div class="actions">
+          <button id="save-api-btn" class="secondary">Save backend URL</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="playlist-controls">
+      <div class="bar">
+        <button id="play-all-btn">Play playlist</button>
+        <button id="clear-all-btn" class="danger" title="Remove all">Clear all</button>
+      </div>
+      <audio id="player" controls preload="auto"></audio>
+    </section>
+
+    <section id="list-section">
+      <h2>Saved articles</h2>
+      <ul id="articles-list" class="articles"></ul>
+      <div id="empty-state" class="empty hidden">No saved articles</div>
+    </section>
+  </div>
+
+  <script src="idb.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
