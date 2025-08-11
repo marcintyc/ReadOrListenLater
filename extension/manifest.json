@@ -15,7 +15,8 @@
     "notifications"
   ],
   "host_permissions": [
-    "http://localhost:3000/*"
+    "http://localhost:3000/*",
+    "https://*/*"
   ],
   "background": {
     "service_worker": "background.js"

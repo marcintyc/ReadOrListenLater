@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3000';
+let API_BASE = 'http://localhost:3000';
 
 // Simple UUID v4 generator for ids
 function uuidv4() {
@@ -11,6 +11,8 @@ const ui = {
   urlInput: document.getElementById('url-input'),
   saveUrlBtn: document.getElementById('save-url-btn'),
   saveCurrentBtn: document.getElementById('save-current-btn'),
+  apiInput: document.getElementById('api-input'),
+  saveApiBtn: document.getElementById('save-api-btn'),
   list: document.getElementById('articles-list'),
   empty: document.getElementById('empty-state'),
   player: document.getElementById('player'),
@@ -29,6 +31,12 @@ async function fetchJson(url, opts) {
   const res = await fetch(url, opts);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
+}
+
+async function loadApiBase() {
+  const { apiBase } = await chrome.storage.local.get('apiBase');
+  if (apiBase) API_BASE = apiBase;
+  if (ui.apiInput) ui.apiInput.value = API_BASE;
 }
 
 async function saveFromUrl(rawUrl) {
@@ -219,6 +227,13 @@ ui.saveCurrentBtn.addEventListener('click', async () => {
   await saveCurrentTab();
 });
 
+ui.saveApiBtn.addEventListener('click', async () => {
+  const val = ui.apiInput.value?.trim();
+  if (!val) return;
+  await chrome.storage.local.set({ apiBase: val });
+  API_BASE = val;
+});
+
 ui.playAllBtn.addEventListener('click', () => {
   const ids = state.articles.map(a => a.id);
   playQueue(ids);
@@ -242,6 +257,7 @@ ui.player.addEventListener('ended', () => {
 
 // init
 (async function init(){
+  await loadApiBase();
   await loadArticles();
   try {
     const { pendingUrls } = await chrome.storage.local.get('pendingUrls');
@@ -254,7 +270,7 @@ ui.player.addEventListener('ended', () => {
     } else {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab?.url?.startsWith('http')) {
-        ui.urlInput.placeholder = `Wklej link lub użyj: ${new URL(tab.url).hostname}`;
+        ui.urlInput.placeholder = `Paste link or use: ${new URL(tab.url).hostname}`;
       }
     }
   } catch (_) {}

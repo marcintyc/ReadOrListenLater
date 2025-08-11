@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: read-listen-backend
+    env: node
+    plan: free
+    buildCommand: npm install --prefix backend
+    startCommand: node server.js
+    rootDir: backend
+    envVars:
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: ELEVENLABS_MODEL_ID
+        sync: false
+    autoDeploy: true

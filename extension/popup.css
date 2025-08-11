@@ -83,6 +83,8 @@ button.danger:hover { background: var(--danger-hover); }
 .empty { text-align: center; color: var(--muted); padding: 12px; }
 .hidden { display: none; }
 
+#settings-section { margin-top: 12px; }
+
 @media (prefers-color-scheme: light) {
   :root { --bg: #ffffff; --panel: #ffffff; --text: #0f172a; --muted: #475569; --border: #e2e8f0; }
   #url-input { background: #fff; color: #0f172a; }

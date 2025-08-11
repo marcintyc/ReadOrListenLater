@@ -1,48 +1,36 @@
-# Backend: Czytaj i Słuchaj
+# Backend: Read & Listen (Pocket-like)
 
-Serwer Node.js dostarcza endpoint `POST /save`, który:
-- pobiera stronę przez Puppeteer (`waitUntil: 'networkidle2'`),
-- czyści treść przez Readability (JSDOM),
-- generuje MP3 przez CLI Coqui TTS i zapisuje w `public/audio`,
-- zwraca `{ title, text, audioUrl }`.
+Express server exposes `POST /save` which:
+- fetches the page via Puppeteer (`waitUntil: 'networkidle2'`),
+- extracts clean text using Readability (JSDOM),
+- synthesizes MP3 via ElevenLabs API, saves under `public/audio`,
+- returns `{ title, text, audioUrl }`.
 
-## Szybki start
+## Config
+Environment variables:
+- `ELEVENLABS_API_KEY` (required)
+- `ELEVENLABS_VOICE_ID` (optional, default: Rachel `21m00Tcm4TlvDq8ikWAM`)
+- `ELEVENLABS_MODEL_ID` (optional, default: `eleven_multilingual_v2`)
+- `PORT` (optional)
 
-1. Zainstaluj zależności Node:
-
+## Quick start (local)
 ```
 npm install
+ELEVENLABS_API_KEY=your_key npm start
 ```
+Server listens on `http://localhost:3000`.
 
-2. Zainstaluj Coqui TTS (Python):
+## Deploy from GitHub (Railway/Render)
+- Push this repo to GitHub.
+- Create a new service from GitHub, select `/backend` as the root.
+- Build command: `npm install`
+- Start command: `node server.js`
+- Add env var `ELEVENLABS_API_KEY`.
+- After deploy, note the public URL, e.g. `https://your-app.up.railway.app`.
 
-- Wymagany Python 3.8+ oraz `pip`.
-- Zalecane wirtualne środowisko (venv).
-
+## Manual test
 ```
-python -m venv .venv
-source .venv/bin/activate
-pip install TTS
-```
-
-3. Uruchom serwer:
-
-```
-npm start
-```
-
-Serwer nasłuchuje na `http://localhost:3000` i serwuje pliki audio spod `/audio/*`.
-
-## Uwaga o modelu
-
-W pliku `server.js` model CLI ustawiony jest na `tts_models/multilingual/multi-dataset/your_tts`. Możesz zmienić na inny, np. polski, zgodnie z dokumentacją Coqui TTS.
-
-Przykład: `--model_name tts_models/pl/mai_female/glow-tts` (jeśli dostępny w Twojej instalacji TTS).
-
-## Test ręczny
-
-```
-curl -X POST http://localhost:3000/save \
+curl -X POST "$BASE/save" \
   -H 'Content-Type: application/json' \
   -d '{"url":"https://example.com"}'
 ```

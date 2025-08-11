@@ -9,15 +9,24 @@
 <body>
   <div id="app">
     <header>
-      <h1>Czytaj i Słuchaj</h1>
+      <h1>Read & Listen</h1>
     </header>
 
     <section id="save-section">
       <div class="save-card">
-        <input id="url-input" type="url" placeholder="Wklej link do artykułu" />
+        <input id="url-input" type="url" placeholder="Paste article link" />
         <div class="actions">
-          <button id="save-url-btn">Zapisz z linka</button>
-          <button id="save-current-btn">Zapisz bieżącą kartę</button>
+          <button id="save-url-btn">Save from link</button>
+          <button id="save-current-btn">Save current tab</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings-section">
+      <div class="save-card">
+        <input id="api-input" type="url" placeholder="Backend URL (e.g. https://your-app.up.railway.app)" />
+        <div class="actions">
+          <button id="save-api-btn" class="secondary">Save backend URL</button>
         </div>
       </div>
     </section>
@@ -30,12 +39,12 @@
       <audio id="player" controls preload="auto"></audio>
     </section>
 
-    <section id="list-section">
-      <h2>Zapisane artykuły</h2>
+         <section id="list-section">
+      <h2>Saved articles</h2>
       <ul id="articles-list" class="articles"></ul>
-      <div id="empty-state" class="empty hidden">Brak zapisanych artykułów</div>
+      <div id="empty-state" class="empty hidden">No saved articles</div>
     </section>
-  </div>
+</div>
 
   <script src="idb.js"></script>
   <script src="popup.js"></script>

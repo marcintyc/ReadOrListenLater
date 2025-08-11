@@ -1,17 +1,18 @@
-# Rozszerzenie: Czytaj i Słuchaj
+# Extension: Read & Listen
 
-## Instalacja (tryb deweloperski)
-1. Otwórz Chrome i przejdź do `chrome://extensions/`.
-2. Włącz tryb deweloperski (Developer mode).
-3. Kliknij "Load unpacked" / "Załaduj rozpakowane" i wskaż folder `/workspace/extension`.
-4. Kliknij ikonę rozszerzenia, aby otworzyć popup.
+## Install (developer mode)
+1. Open Chrome → `chrome://extensions/`.
+2. Enable Developer mode.
+3. Click "Load unpacked" and select `/workspace/extension`.
+4. Click the extension icon to open the popup.
 
-## Użycie
-- Z przycisku "Zapisz bieżącą kartę" zapiszesz aktualną stronę.
-- Możesz wkleić URL i kliknąć "Zapisz z linka".
-- Lista pokazuje tytuły. Przyciski: "Odtwarzaj", "Dodaj do playlisty", "Tekst", "Usuń".
-- "Odtwórz playlistę" odtwarza wszystkie po kolei. Tryb offline działa po zapisaniu (audio jest w IndexedDB).
-- Menu kontekstowe (prawy klik) pozwala dodać stronę do kolejki. Po otwarciu popupu zostanie zapisana automatycznie.
+## Usage
+- "Save current tab" saves the current page.
+- Paste any URL and click "Save from link".
+- Use the Settings box to set your backend URL (e.g. Railway/Render URL). It is stored in `chrome.storage`.
+- The list shows titles with buttons: Play, Add to playlist, Text, Delete.
+- "Play playlist" plays all saved articles in order.
+- Offline: after saving, text and audio are stored in IndexedDB; popup assets are cached for offline.
 
-## Wymagania backendu
-Backend nasłuchuje na `http://localhost:3000` (patrz `/workspace/backend`).
+## Backend
+Set the backend public URL in the popup (e.g. `https://your-app.up.railway.app`).
