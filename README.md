@@ -18,3 +18,8 @@
 - Click "Save current tab" or paste a URL.
 - It cleans the content, synthesizes MP3 via ElevenLabs, downloads and stores it in IndexedDB.
 - Offline playback works after saving.
+
+## Web app on GitHub Pages
+- This repo includes a PWA under `/docs` ready for GitHub Pages.
+- Enable Pages (Settings → Pages → Branch: `main`, Folder: `/docs`).
+- Open the Pages URL and set the backend URL in the app Settings.
