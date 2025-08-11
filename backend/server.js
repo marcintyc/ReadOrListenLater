@@ -82,6 +82,10 @@ async function extractArticle(url) {
   }
 }
 
+app.get('/health', (req, res) => {
+  res.json({ ok: true, t: Date.now() });
+});
+
 app.post('/save', async (req, res) => {
   try {
     const { url } = req.body || {};

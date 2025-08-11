@@ -82,8 +82,19 @@ ui.playAllBtn.onclick = ()=>{ const ids=state.articles.map(a=>a.id); playQueue(i
 ui.clearAllBtn.onclick = async()=>{ if(!confirm('Clear all?')) return; await WebArticleDB.clearAll(); for(const id of state.objectUrls.keys()) revokeObjectUrl(id); state.articles=[]; state.queue=[]; state.nowPlayingId=null; ui.player.pause(); ui.player.src=''; renderList(); };
 ui.player.addEventListener('ended', ()=>{ playNextInQueue(); });
 
+async function pingBackend(){
+  const el=document.getElementById('status');
+  if(!API_BASE){ el.textContent='Backend: not set'; el.className='status'; return; }
+  try{
+    const res=await fetch(`${API_BASE}/health`, { mode:'cors' });
+    if(!res.ok) throw new Error('bad');
+    el.textContent='Backend: OK'; el.className='status ok';
+  }catch(e){ el.textContent='Backend: error'; el.className='status err'; }
+}
+
 (async function init(){
   if(API_BASE) ui.apiInput.value=API_BASE;
   await loadArticles();
+  await pingBackend();
   if('serviceWorker' in navigator){ try{ await navigator.serviceWorker.register('./service-worker.js'); }catch(e){ console.warn('SW reg failed', e);} }
 })();
