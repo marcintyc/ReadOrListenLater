@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Czytaj i Słuchaj</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Czytaj i Słuchaj</h1>
+    </header>
+
+    <section id="save-section">
+      <div class="save-card">
+        <input id="url-input" type="url" placeholder="Wklej link do artykułu" />
+        <div class="actions">
+          <button id="save-url-btn">Zapisz z linka</button>
+          <button id="save-current-btn">Zapisz bieżącą kartę</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="playlist-controls">
+      <div class="playlist-bar">
+        <button id="play-all-btn">Odtwórz playlistę</button>
+        <button id="clear-all-btn" title="Usuń wszystkie artykuły">Usuń wszystkie</button>
+      </div>
+      <audio id="player" controls preload="auto"></audio>
+    </section>
+
+    <section id="list-section">
+      <h2>Zapisane artykuły</h2>
+      <ul id="articles-list" class="articles"></ul>
+      <div id="empty-state" class="empty hidden">Brak zapisanych artykułów</div>
+    </section>
+  </div>
+
+  <script src="idb.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
