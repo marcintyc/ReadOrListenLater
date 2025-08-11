@@ -3,6 +3,7 @@ import cors from 'cors';
 import { JSDOM } from 'jsdom';
 import { Readability } from '@mozilla/readability';
 import puppeteer from 'puppeteer';
+import fetch from 'cross-fetch';
 import fsp from 'fs/promises';
 import fs from 'fs';
 import path from 'path';
