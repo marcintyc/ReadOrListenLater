@@ -59,7 +59,7 @@ function renderList(){
     const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new URL(article.url).hostname;
     left.append(title, meta);
     const controls=document.createElement('div'); controls.className='controls';
-    const playBtn=document.createElement('button'); playBtn.textContent='Play'; playBtn.onclick=async()=>{ await playSingle(article.id); };
+    const playBtn=document.createElement('button'); playBtn.className='play'; playBtn.textContent='Play'; playBtn.onclick=async()=>{ await playSingle(article.id); };
     const addBtn=document.createElement('button'); addBtn.className='secondary'; addBtn.textContent='Add to playlist'; addBtn.onclick=()=>enqueue(article.id);
     const viewBtn=document.createElement('button'); viewBtn.className='secondary'; viewBtn.textContent='Text'; viewBtn.onclick=()=>showTextModal(article);
     const delBtn=document.createElement('button'); delBtn.className='danger'; delBtn.textContent='Delete'; delBtn.onclick=async()=>{ await WebArticleDB.deleteArticle(article.id); revokeObjectUrl(article.id); state.articles=state.articles.filter(a=>a.id!==article.id); state.queue=state.queue.filter(id=>id!==article.id); if(state.nowPlayingId===article.id){ ui.player.pause(); ui.player.src=''; state.nowPlayingId=null; } renderList(); };
