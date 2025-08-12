@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: npm ci || npm install && npx puppeteer browsers install chrome && node -e "console.log(require('puppeteer').executablePath())"
-    startCommand: node server.js
+    startCommand: npx puppeteer browsers install chrome && node server.js
     rootDir: backend
     envVars:
       - key: ELEVENLABS_API_KEY
@@ -13,4 +13,6 @@ services:
         sync: false
       - key: ELEVENLABS_MODEL_ID
         sync: false
+      - key: PUPPETEER_CACHE_DIR
+        value: /opt/render/.cache/puppeteer
     autoDeploy: true
