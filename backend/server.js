@@ -62,6 +62,7 @@ async function synthesizeWithElevenLabs(text, outPath) {
 async function extractArticle(url) {
   const browser = await puppeteer.launch({
     headless: 'new',
+    executablePath: puppeteer.executablePath(),
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
   try {
