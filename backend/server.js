@@ -59,28 +59,73 @@ async function synthesizeWithElevenLabs(text, outPath) {
   });
 }
 
-async function extractArticle(url) {
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    executablePath: puppeteer.executablePath(),
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+function parseWithReadability(html, baseUrl) {
+  const dom = new JSDOM(html, { url: baseUrl });
+  const reader = new Readability(dom.window.document);
+  const article = reader.parse();
+  const title = article?.title?.trim() || (new URL(baseUrl)).hostname;
+  const textContent = article?.textContent?.trim() || '';
+  return { title, text: textContent };
+}
+
+async function extractWithFetch(url) {
+  const res = await fetch(url, {
+    headers: {
+      'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      'accept-language': 'en-US,en;q=0.9'
+    },
+    redirect: 'follow',
   });
+  const ct = res.headers.get('content-type') || '';
+  if (!res.ok || !ct.includes('text/html')) {
+    throw new Error(`Fetch fallback failed: ${res.status}`);
+  }
+  const html = await res.text();
+  const finalUrl = res.url || url;
+  return parseWithReadability(html, finalUrl);
+}
+
+async function extractArticle(url) {
+  let browser;
   try {
+    browser = await puppeteer.launch({
+      headless: 'new',
+      executablePath: puppeteer.executablePath(),
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+    await page.setExtraHTTPHeaders({ 'accept-language': 'en-US,en;q=0.9' });
+
+    // Block heavy resources to speed up and avoid timeouts
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const type = req.resourceType();
+      if (type === 'image' || type === 'media' || type === 'font' || type === 'stylesheet') {
+        return req.abort();
+      }
+      return req.continue();
+    });
+
+    page.setDefaultNavigationTimeout(120000);
+    // First try fast DOMContentLoaded
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    // Then give a brief idle to settle async content
+    try {
+      await page.waitForNetworkIdle({ timeout: 3000 });
+    } catch {}
+
     const html = await page.content();
-    const baseUri = await page.url();
-
-    const dom = new JSDOM(html, { url: baseUri });
-    const reader = new Readability(dom.window.document);
-    const article = reader.parse();
-
-    const title = article?.title?.trim() || (new URL(baseUri)).hostname;
-    const textContent = article?.textContent?.trim() || '';
-
-    return { title, text: textContent };
+    const baseUri = page.url();
+    return parseWithReadability(html, baseUri);
+  } catch (err) {
+    // Fallback to simple fetch + readability
+    console.warn('Puppeteer failed, falling back to fetch:', err?.message);
+    return await extractWithFetch(url);
   } finally {
-    await browser.close();
+    if (browser) {
+      try { await browser.close(); } catch {}
+    }
   }
 }
 
