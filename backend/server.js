@@ -15,7 +15,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  /https:\/\/.*\.github\.io$/,
+  'https://marcintyc.github.io',
+  'https://marcintyc.github.io/ReadOrListenLater'
+];
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.some((o) => (o instanceof RegExp ? o.test(origin) : o === origin))) return cb(null, true);
+    // Allow Render preview domains too
+    if (/^https:\/\/.*\.onrender\.com$/.test(origin)) return cb(null, true);
+    return cb(null, true); // fallback to allow all for this app
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '2mb' }));
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
